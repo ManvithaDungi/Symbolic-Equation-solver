@@ -1,0 +1,310 @@
+:root {
+  --cyber-bg-primary: #0a0a0f;
+  --cyber-bg-secondary: #111118;
+  --cyber-bg-tertiary: #1a1a24;
+  --cyber-accent-primary: #43b0af;
+  --cyber-accent-color: #446b5c;
+  --cyber-accent-secondary: #67fff2;
+  --cyber-accent-tertiary: #81ec86;
+  --cyber-text-primary: #e0e0e0;
+  --cyber-text-secondary: #b0b0b5;
+  --cyber-text-muted: #808085;
+  --cyber-border: #333344;
+  --cyber-surface: #1e1e2e;
+  --cyber-surface-hover: #252536;
+}
+
+.about-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  color: var(--cyber-text-primary);
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.about-header svg {
+  color: var(--cyber-accent-primary);
+  margin-bottom: 1rem;
+}
+
+.about-header h1 {
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: var(--cyber-text-primary);
+}
+
+.about-header p {
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--cyber-text-secondary);
+}
+
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.stat-card {
+  background: var(--cyber-surface);
+  border: 1px solid var(--cyber-border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  cursor: default;
+}
+
+.stat-card:hover {
+  background: var(--cyber-surface-hover);
+  border-color: var(--cyber-accent-primary);
+  transform: translateY(-4px);
+}
+
+.stat-card svg {
+  color: var(--cyber-accent-primary);
+  margin-bottom: 1rem;
+}
+
+.stat-card .value {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--cyber-accent-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.stat-card .label {
+  color: var(--cyber-text-secondary);
+  font-weight: 500;
+}
+
+.features-section {
+  margin-bottom: 4rem;
+}
+
+.features-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'Orbitron', monospace;
+  color: var(--cyber-accent-primary);
+  font-weight: 700;
+}
+
+.feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--cyber-surface);
+  border: 1px solid var(--cyber-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+.feature-card:hover {
+  background: var(--cyber-surface-hover);
+  border-color: var(--cyber-accent-primary);
+  transform: translateX(8px);
+}
+
+.feature-card svg {
+  color: var(--cyber-accent-primary);
+  margin-top: 0.3rem;
+  flex-shrink: 0;
+}
+
+.feature-card strong {
+  font-family: 'Orbitron', monospace;
+  color: var(--cyber-text-primary);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.feature-card p {
+  margin: 0;
+  color: var(--cyber-text-secondary);
+  flex: 1;
+}
+
+.tech-stack-section {
+  margin-bottom: 4rem;
+}
+
+.tech-stack-section h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: 'Orbitron', monospace;
+  color: var(--cyber-accent-primary);
+  font-weight: 700;
+}
+
+.tech-card {
+  background: var(--cyber-surface);
+  border: 1px solid var(--cyber-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  cursor: default;
+}
+
+.tech-card:hover {
+  background: var(--cyber-surface-hover);
+  border-color: var(--cyber-accent-tertiary);
+  transform: scale(1.03);
+}
+
+.tech-card h4 {
+  color: var(--cyber-accent-tertiary);
+  margin-bottom: 0.5rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.tech-card p {
+  margin: 0;
+  color: var(--cyber-text-secondary);
+}
+
+.api-info-section {
+  background: var(--cyber-surface);
+  border: 1px solid var(--cyber-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  color: var(--cyber-text-primary);
+}
+
+.api-info-section h3 {
+  margin-bottom: 1rem;
+  color: var(--cyber-accent-primary);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.api-info-section p {
+  margin-bottom: 0.5rem;
+  font-family: 'Courier New', monospace;
+  color: var(--cyber-text-secondary);
+}
+
+.cta-section {
+  background: linear-gradient(135deg, var(--cyber-bg-secondary) 0%, var(--cyber-bg-tertiary) 100%);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: var(--cyber-text-primary);
+}
+
+.cta-section h2 {
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: var(--cyber-accent-primary);
+}
+
+.cta-section p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: var(--cyber-text-secondary);
+}
+
+.cta-links {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-links .btn {
+  border: 2px solid var(--cyber-accent-primary);
+  color: var(--cyber-accent-primary);
+  padding: 0.75rem 2rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1rem;
+  border-radius: 12px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+}
+
+.cta-links .btn:hover,
+.cta-links .btn:focus {
+  background: var(--cyber-accent-primary);
+  color: var(--cyber-bg-primary);
+  outline: none;
+}
+
+/* Footer */
+.about-footer {
+  text-align: center;
+  padding: 2rem 0;
+  border-top: 1px solid var(--cyber-border);
+  color: var(--cyber-text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.about-footer svg {
+  color: var(--cyber-accent-secondary);
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .features-section h2,
+  .tech-stack-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .feature-card {
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .cta-links {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-container {
+    padding: 1rem;
+  }
+  .feature-card,
+  .tech-card {
+    padding: 1rem;
+  }
+  .api-info-section,
+  .cta-section {
+    padding: 1rem;
+  }
+}

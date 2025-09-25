@@ -1,0 +1,276 @@
+.visualization-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--text-primary, #333333);
+  background: var(--bg-tertiary, #fafafa);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-gap: 2rem;
+  grid-template-areas:
+    "header header"
+    "content examples"
+    "features features";
+}
+
+.visualization-container > h1 {
+  grid-area: header;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: var(--accent-primary, #222222);
+  font-size: 2.8rem;
+  text-transform: uppercase;
+}
+
+.visualization-container > p {
+  grid-area: header;
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary, #555555);
+}
+
+/* Input control panel section */
+.input-control-panel {
+  grid-area: content;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: none;
+}
+
+/* Function input and controls */
+.function-input {
+  margin-bottom: 2rem;
+}
+
+.function-input h3 {
+  color: var(--accent-primary, #007acc);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.function-input input {
+  width: 100%;
+  padding: 0.5rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 6px;
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #333);
+  transition: border-color 0.3s ease;
+}
+
+.function-input input:focus {
+  outline: none;
+  border-color: var(--accent-primary, #007acc);
+  background: var(--bg-secondary, #f0f8ff);
+}
+
+/* Graph type buttons */
+.graph-type-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.graph-type-buttons button {
+  flex: 1;
+  padding: 0.5rem;
+  background: var(--bg-primary, #f7f7f7);
+  border: 1px solid var(--border, #ccc);
+  color: var(--text-secondary, #555);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  transition: background-color 0.3s ease;
+}
+
+.graph-type-buttons button.active,
+.graph-type-buttons button:hover {
+  background: var(--accent-primary, #007acc);
+  color: white;
+  border-color: var(--accent-primary, #007acc);
+}
+
+/* Domain inputs */
+.domain-inputs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.domain-inputs input {
+  flex: 1;
+  padding: 0.5rem;
+  font-family: 'Rajdhani', monospace;
+  border-radius: 6px;
+  border: 1px solid var(--border, #ccc);
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #333);
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.domain-inputs input:focus {
+  border-color: var(--accent-primary, #007acc);
+  background: var(--bg-secondary, #f0f8ff);
+  outline: none;
+}
+
+/* Buttons */
+.graph-button,
+.reset-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid;
+  transition: background-color 0.3s ease;
+}
+
+.graph-button {
+  border-color: var(--accent-primary, #007acc);
+  color: var(--accent-primary, #007acc);
+  background: transparent;
+}
+
+.graph-button:hover:enabled,
+.graph-button:focus:enabled {
+  background-color: var(--accent-secondary, #005fa3);
+  color: white;
+  outline: none;
+}
+
+.reset-button {
+  border-color: #555555;
+  color: #555555;
+  background: transparent;
+}
+
+.reset-button:hover {
+  background: #555555;
+  color: white;
+}
+
+/* Quick examples panel */
+.quick-examples {
+  grid-area: examples;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: none;
+}
+
+.quick-examples h3 {
+  margin-bottom: 1.5rem;
+  color: var(--accent-tertiary, #00a8ff);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.quick-examples button {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg-primary, #f7f7f7);
+  border: 1px solid var(--border, #ccc);
+  color: var(--text-secondary, #555);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: left;
+  font-size: 0.9rem;
+  font-family: 'Rajdhani', monospace;
+  font-weight: 600;
+}
+
+.quick-examples button:hover {
+  background: var(--accent-tertiary, #0090ff);
+  color: white;
+  border-color: var(--accent-tertiary, #0090ff);
+}
+
+/* Visualization features */
+.visualization-features {
+  grid-area: features;
+  background: var(--surface, white);
+  border: 1px solid var(--border, #ddd);
+  border-radius: 12px;
+  padding: 2rem;
+  color: var(--text-secondary, #555);
+}
+
+.visualization-features h3 {
+  margin-bottom: 1rem;
+  color: var(--accent-primary, #007acc);
+}
+
+.visualization-features ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.visualization-features li {
+  margin-bottom: 0.3rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .visualization-container {
+    display: block;
+    padding: 1rem;
+  }
+  .input-control-panel {
+    display: block;
+  }
+  .graph-type-buttons button,
+  .quick-examples button {
+    width: 100%;
+  }
+  .domain-inputs {
+    flex-wrap: wrap;
+  }
+  .quick-examples {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .visualization-container h1 {
+    font-size: 2rem;
+  }
+  .quick-examples button {
+    font-size: 0.85rem;
+  }
+}

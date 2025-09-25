@@ -1,0 +1,222 @@
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-tertiary: #1a1a24;
+  --accent-primary: #43b0af;
+  --accent-color: #446b5c;
+  --accent-secondary: #67fff2;
+  --accent-tertiary: #81ec86;
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b5;
+  --border: #333344;
+  --surface: #1e1e2e;
+  --surface-hover: #252536;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  border-radius: 12px;
+  padding: 4rem 2rem;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.hero-section h1 {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--accent-primary);
+}
+
+.hero-section p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  color: var(--text-secondary);
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.btn {
+  font-family: 'Orbitron', monospace;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--accent-primary);
+  background: transparent;
+  color: var(--accent-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.btn:hover,
+.btn:focus {
+  background: var(--accent-primary);
+  color: var(--bg-primary);
+  outline: none;
+}
+
+/* Additional style for the "Try Now" button */
+.examples-section .btn {
+  margin-top: 1.5rem;
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+}
+
+.examples-section .btn:hover,
+.examples-section .btn:focus {
+  background: var(--accent-secondary);
+  color: var(--bg-primary);
+}
+
+/* Features Section */
+.features-section {
+  margin-bottom: 4rem;
+}
+
+.features-section h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--accent-primary);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.features-section p {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+
+.feature-card:hover {
+  background: var(--surface-hover);
+  border-color: var(--accent-primary);
+  transform: translateY(-4px);
+}
+
+.feature-card svg {
+  color: var(--accent-primary);
+  margin-bottom: 1rem;
+}
+
+.feature-card strong {
+  display: block;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.feature-card p {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Examples Section */
+.examples-section {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--surface);
+  border-radius: 12px;
+  margin-bottom: 4rem;
+}
+
+.examples-section h2 {
+  margin-bottom: 2rem;
+  color: var(--accent-primary);
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+}
+
+.examples-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.example-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: background 0.3s ease, border-color 0.3s ease;
+  font-family: 'Rajdhani', monospace;
+  font-size: 1.1rem;
+  color: var(--accent-tertiary);
+  cursor: default;
+}
+
+.example-card:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--accent-tertiary);
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .features-list,
+  .examples-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .feature-card {
+    text-align: center;
+  }
+}
