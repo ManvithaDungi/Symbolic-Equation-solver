@@ -12,7 +12,9 @@ const EquationInput = ({ onSolve, isLoading }) => {
     "x^2 + 2*x + 1",
     "derivative(x^3 + 2*x^2, x)",
     "integral(x^2, x)",
-    "solve(x^2 - 4, x)",
+    "solve(x^2 - 4 = 0, x)",
+    "2 + 3 * 4",
+    "sin(pi/2)",
   ];
 
   const handleSubmit = (e) => {
@@ -79,6 +81,7 @@ const SolverOutput = ({ equation, result }) => {
         <AlertCircle size={20} aria-hidden="true" />
         <h3>Error Solving Equation</h3>
         <p>{result.error || "Unable to solve this equation"}</p>
+        <small>Try simpler expressions or check syntax</small>
       </div>
     );
   }
@@ -97,35 +100,40 @@ const SolverOutput = ({ equation, result }) => {
             <h3 id="solution-title">Solution</h3>
             <p>Input: {equation}</p>
           </div>
-          <span aria-label={`Solution type is ${result.type}`}>{result.type}</span>
+          <span aria-label={`Solution type is ${result.type}`} className="solution-type">
+            {result.type}
+          </span>
         </div>
 
-        <div className="steps-section" aria-label="Step-by-step solution">
-          <h4>Step-by-Step Solution:</h4>
-          {result.steps.map((step) => (
-            <motion.div
-              key={step.step}
-              className="step-block"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: step.step * 0.1 }}
-            >
-              <div className="step-header">
-                <h5>
-                  Step {step.step}: {step.description}
-                </h5>
-                <button
-                  onClick={() => copyToClipboard(step.expression)}
-                  aria-label={`Copy expression from step ${step.step}`}
-                >
-                  <Copy size={14} />
-                </button>
-              </div>
-              <div className="step-expression">{step.expression}</div>
-              {step.explanation && <p className="step-explanation">{step.explanation}</p>}
-            </motion.div>
-          ))}
-        </div>
+        {result.steps && result.steps.length > 0 && (
+          <div className="steps-section" aria-label="Step-by-step solution">
+            <h4>Step-by-Step Solution:</h4>
+            {result.steps.map((step) => (
+              <motion.div
+                key={step.step}
+                className="step-block"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: step.step * 0.1 }}
+              >
+                <div className="step-header">
+                  <h5>
+                    Step {step.step}: {step.description}
+                  </h5>
+                  <button
+                    onClick={() => copyToClipboard(step.expression)}
+                    aria-label={`Copy expression from step ${step.step}`}
+                    className="copy-btn"
+                  >
+                    <Copy size={14} />
+                  </button>
+                </div>
+                <div className="step-expression">{step.expression}</div>
+                {step.explanation && <p className="step-explanation">{step.explanation}</p>}
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         <motion.div
           className="final-answer"
@@ -136,8 +144,12 @@ const SolverOutput = ({ equation, result }) => {
           tabIndex={0}
         >
           <h4>Final Answer:</h4>
-          <div>{result.finalAnswer}</div>
-          <button onClick={() => copyToClipboard(result.finalAnswer)} aria-label="Copy final answer">
+          <div className="answer-content">{result.finalAnswer}</div>
+          <button 
+            onClick={() => copyToClipboard(result.finalAnswer)} 
+            aria-label="Copy final answer"
+            className="copy-btn"
+          >
             <Copy size={14} /> Copy
           </button>
         </motion.div>
@@ -154,31 +166,53 @@ const Solver = () => {
   const handleSolveEquation = useCallback(async (equation) => {
     setIsLoading(true);
     setCurrentEquation(equation);
+    
     try {
-      const response = await fetch(`${API_BASE_URL}/api/math/solve`, {
+      const response = await fetch(`${API_BASE_URL}/api/solve`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
         body: JSON.stringify({ expression: equation }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       const result = await response.json();
       setSolution(result);
     } catch (err) {
-      setSolution({ success: false, error: err.message });
+      console.error("Solve error:", err);
+      setSolution({ 
+        success: false, 
+        error: `Failed to solve: ${err.message}`,
+        type: "error"
+      });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   return (
     <main className="solver-container">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.5 }}
+      >
         <h1>Mathematical Equation Solver</h1>
         <p>Enter expressions and get step-by-step solutions.</p>
 
         <EquationInput onSolve={handleSolveEquation} isLoading={isLoading} />
         <SolverOutput equation={currentEquation} result={solution} />
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 0.5 }}>
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
           <h3>Supported Operations:</h3>
           <div className="supported-ops-container">
             <div className="ops-category">
@@ -189,6 +223,8 @@ const Solver = () => {
                 <li>3 * 4</li>
                 <li>8 / 2</li>
                 <li>x^2, x^3</li>
+                <li>sin(x), cos(x), tan(x)</li>
+                <li>ln(x), log(x)</li>
               </ul>
             </div>
             <div className="ops-category">
@@ -196,8 +232,9 @@ const Solver = () => {
               <ul>
                 <li>derivative(x^3, x)</li>
                 <li>integral(x^2, x)</li>
-                <li>solve(x^2 - 4, x)</li>
-                <li>sin(x), cos(x), ln(x)</li>
+                <li>solve(x^2 - 4 = 0, x)</li>
+                <li>limit(x, 0, sin(x)/x)</li>
+                <li>simplify(x^2 + 2*x + 1)</li>
               </ul>
             </div>
           </div>
@@ -208,5 +245,3 @@ const Solver = () => {
 };
 
 export default Solver;
-//math/src/pages/Solver.js
-//this is my frontend react code

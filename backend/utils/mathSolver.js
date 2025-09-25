@@ -1,164 +1,132 @@
-// backend/utils/mathSolver.js
-const { evaluate, parse, derivative, simplify } = require("mathjs");
+const { evaluate, parse, derivative, simplify, solve } = require("mathjs");
 
 const solveMathExpression = (equation) => {
   try {
-    const cleanEquation = equation.trim().toLowerCase();
-
-    if (isDerivativeOperation(cleanEquation)) return solveDerivative(equation);
-    if (isIntegralOperation(cleanEquation)) return solveIntegral(equation);
-    if (isEquationSolving(cleanEquation)) return solveEquation(equation);
-    if (isLimitOperation(cleanEquation)) return solveLimit(equation);
-    return simplifyExpression(equation);
+    const eq = equation.trim();
+    if (/derivative/i.test(eq)) return solveDerivative(eq);
+    if (/integral/i.test(eq)) return solveIntegral(eq);
+    if (/solve/i.test(eq)) return solveEquation(eq);
+    if (/limit|lim/i.test(eq)) return solveLimit(eq);
+    return simplifyExpression(eq);
   } catch (error) {
     return createErrorResult("general", error);
   }
 };
 
-const isDerivativeOperation = (eq) => /\b(derivative|diff|d\/d|differentiate)\b/i.test(eq);
-const isIntegralOperation = (eq) => /\b(integral|integrate|∫)\b/i.test(eq);
-const isEquationSolving = (eq) => /\b(solve|find|roots?)\b/i.test(eq) && eq.includes("=");
-const isLimitOperation = (eq) => /\b(limit|lim)\b/i.test(eq);
-
+// ------------------ DERIVATIVE ------------------
 const solveDerivative = (equation) => {
   try {
     const { func, variable } = parseDerivativeInput(equation);
-    const steps = [];
-    steps.push(createStep(1, "Original function", `f(${variable}) = ${func}`, "Starting function"));
-    const parsed = parse(func);
-    const derivativeResult = derivative(parsed, variable);
-    const simplified = simplify(derivativeResult);
-    addDerivativeRules(steps, func, variable);
-    steps.push(createStep(steps.length + 1, "Final derivative", `f'(${variable}) = ${simplified.toString()}`, "Applying differentiation rules"));
-    return createSuccessResult(steps, simplified.toString(), "calculus");
+    const steps = [{ step: 1, description: "Original function", expression: func, explanation: "Starting function" }];
+    const result = derivative(parse(func), variable);
+    const simplified = simplify(result).toString();
+    steps.push({ step: 2, description: "Derivative", expression: simplified, explanation: "Computed derivative" });
+    return createSuccessResult(steps, simplified, "derivative");
   } catch (error) {
-    return createErrorResult("calculus", error);
+    return createErrorResult("derivative", error);
   }
 };
 
+const parseDerivativeInput = (eq) => {
+  const m = eq.match(/derivative\s*\(\s*(.+?)\s*,\s*(\w+)\s*\)/i);
+  if (!m) throw new Error("Invalid derivative syntax. Use derivative(expression, variable)");
+  return { func: m[1], variable: m[2] };
+};
+
+// ------------------ INTEGRAL ------------------
 const solveIntegral = (equation) => {
   try {
     const { func, variable } = parseIntegralInput(equation);
-    const steps = [createStep(1, "Setup integral", `∫ ${func} d${variable}`, "Setting up integral")];
-    const result = solveIntegralByPattern(func, variable, steps);
-    return createSuccessResult(steps, result, "calculus");
+    const steps = [{ step: 1, description: "Integral setup", expression: func, explanation: "Setup integral" }];
+    let result;
+
+    if (/x\^(\d+)/.test(func)) {
+      const [_, n] = func.match(/x\^(\d+)/);
+      const coeff = 1 / (parseInt(n) + 1);
+      result = `${coeff}*${variable}^${parseInt(n) + 1} + C`;
+    } else result = `∫${func} d${variable} + C`;
+
+    steps.push({ step: 2, description: "Integral result", expression: result, explanation: "Computed integral" });
+    return createSuccessResult(steps, result, "integral");
   } catch (error) {
-    return createErrorResult("calculus", error);
+    return createErrorResult("integral", error);
   }
 };
 
+const parseIntegralInput = (eq) => {
+  const m = eq.match(/integral\s*\(\s*(.+?)\s*,\s*(\w+)\s*\)/i);
+  if (!m) throw new Error("Invalid integral syntax. Use integral(expression, variable)");
+  return { func: m[1], variable: m[2] };
+};
+
+// ------------------ EQUATION ------------------
 const solveEquation = (equation) => {
   try {
-    const { expr, variable } = parseEquationInput(equation);
-    const steps = [createStep(1, "Original equation", expr, "Starting equation")];
-    return solveEquationManually(expr, variable, steps);
+    const { expr, variable } = parseSolveInput(equation);
+    const steps = [{ step: 1, description: "Original equation", expression: expr, explanation: "Setup equation" }];
+    const solutions = solve(expr, variable);
+    steps.push({ step: 2, description: "Solutions", expression: solutions.join(", "), explanation: "Solved equation" });
+    return createSuccessResult(steps, `${variable} = ${solutions.join(", ")}`, "equation");
   } catch (error) {
-    return createErrorResult("algebra", error);
+    return createErrorResult("equation", error);
   }
 };
 
+const parseSolveInput = (eq) => {
+  let match = eq.match(/solve\s*\(\s*(.+?)\s*,\s*(\w+)\s*\)/i);
+  if (match) return { expr: match[1].trim(), variable: match[2].trim() };
+
+  match = eq.match(/solve\s*\(\s*(.+?)\s*=\s*(.+?)\s*,\s*(\w+)\s*\)/i);
+  if (match) {
+    const left = match[1].trim(), right = match[2].trim(), variable = match[3].trim();
+    return { expr: right === "0" ? left : `${left} - (${right})`, variable };
+  }
+
+  throw new Error("Invalid solve syntax. Use solve(expression, variable) or solve(equation = value, variable)");
+};
+
+// ------------------ LIMIT ------------------
 const solveLimit = (equation) => {
   try {
     const { func, variable, approach } = parseLimitInput(equation);
-    const steps = [createStep(1, "Setup limit", `lim(${variable} → ${approach}) ${func}`, "Setting up limit")];
-    try {
-      const substituted = func.replace(new RegExp(variable, "g"), approach);
-      const result = evaluate(substituted);
-      if (isFinite(result)) {
-        steps.push(createStep(2, "Direct substitution", `${result}`, "Limit exists"));
-        return createSuccessResult(steps, result.toString(), "calculus");
-      }
-    } catch {
-      steps.push(createStep(2, "Indeterminate form", "0/0 or ∞/∞", "Requires advanced techniques"));
-    }
-    return createSuccessResult(steps, "Limit requires advanced techniques", "calculus");
+    const steps = [{ step: 1, description: "Limit setup", expression: `${func} as ${variable}->${approach}`, explanation: "Setup limit" }];
+    const substituted = func.replace(new RegExp(variable, "g"), `(${approach})`);
+    const result = evaluate(substituted);
+    steps.push({ step: 2, description: "Limit evaluation", expression: result.toString(), explanation: "Evaluated limit" });
+    return createSuccessResult(steps, result.toString(), "limit");
   } catch (error) {
-    return createErrorResult("calculus", error);
+    return createErrorResult("limit", error);
   }
 };
 
+const parseLimitInput = (eq) => {
+  const m = eq.match(/limit\s*\(\s*(\w+)\s*,\s*([^,]+)\s*,\s*(.+?)\s*\)/i);
+  if (!m) throw new Error("Invalid limit syntax. Use limit(variable, approach, function)");
+  return { variable: m[1], approach: m[2], func: m[3] };
+};
+
+// ------------------ SIMPLIFY ------------------
 const simplifyExpression = (equation) => {
   try {
-    const steps = [createStep(1, "Original expression", equation, "Starting expression")];
-    const parsed = parse(equation);
-    let simplified, evaluated;
-    try { simplified = simplify(parsed); } catch { simplified = parsed; }
-    try {
-      evaluated = evaluate(equation);
-      if (typeof evaluated === "number" && isFinite(evaluated)) {
-        const rounded = Number.isInteger(evaluated) ? evaluated : parseFloat(evaluated.toFixed(10));
-        steps.push(createStep(steps.length + 1, "Numerical evaluation", rounded.toString(), "Evaluated numerically"));
-        return createSuccessResult(steps, rounded.toString(), "arithmetic");
-      }
-    } catch {}
-    return createSuccessResult(steps, simplified.toString(), "arithmetic");
+    const steps = [{ step: 1, description: "Original expression", expression: equation, explanation: "Simplify expression" }];
+    const simplified = simplify(parse(equation)).toString();
+    steps.push({ step: 2, description: "Simplified", expression: simplified, explanation: "Simplified algebraically" });
+    return createSuccessResult(steps, simplified, "simplification");
   } catch (error) {
-    return createErrorResult("arithmetic", error);
+    return createErrorResult("simplification", error);
   }
 };
 
-// Parsing helpers
-const parseDerivativeInput = (equation) => {
-  const patterns = [/derivative\((.+?),\s*(\w+)\)/i, /diff\((.+?),\s*(\w+)\)/i, /d\/d(\w+)\((.+?)\)/i, /d\((.+?)\)\/d(\w+)/i];
-  for (const pattern of patterns) {
-    const match = equation.match(pattern);
-    if (match) return pattern.toString().includes("d/d") || pattern.toString().includes("d(")
-      ? { func: match[2] || match[1], variable: match[1] || match[2] }
-      : { func: match[1], variable: match[2] };
-  }
-  throw new Error("Invalid derivative syntax");
+// ------------------ UTILITY ------------------
+const createSuccessResult = (steps, finalAnswer, type) => ({ steps, finalAnswer, type, success: true });
+const createErrorResult = (type, error) => ({ steps: [], finalAnswer: "", type, success: false, error: error.message || String(error) });
+const validateMathExpression = (expression) => { try { parse(expression); return { valid: true }; } catch (e) { return { valid: false, error: e.message }; } };
+const getExpressionType = (expression) => {
+  if (/derivative/i.test(expression)) return "derivative";
+  if (/integral/i.test(expression)) return "integral";
+  if (/solve/i.test(expression)) return "equation";
+  if (/limit|lim/i.test(expression)) return "limit";
+  return "simplification";
 };
 
-const parseIntegralInput = (equation) => {
-  const patterns = [/integral\((.+?),\s*(\w+)\)/i, /integrate\((.+?),\s*(\w+)\)/i, /∫\s*(.+?)\s*d(\w+)/i];
-  for (const pattern of patterns) {
-    const match = equation.match(pattern);
-    if (match) return { func: match[1], variable: match[2] };
-  }
-  throw new Error("Invalid integral syntax");
-};
-
-const parseEquationInput = (equation) => {
-  const cleanEq = equation.replace(/solve\((.+?),\s*(\w+)\)/i, "$1");
-  const variableMatch = equation.match(/solve\(.+?,\s*(\w+)\)/i) || equation.match(/find\s+(\w+)/i);
-  return { expr: cleanEq, variable: variableMatch ? variableMatch[1] : "x" };
-};
-
-const parseLimitInput = (equation) => {
-  const match = equation.match(/lim(?:it)?\s*\(?\s*(\w+)\s*(?:→|->|approaches?)\s*([^,)]+)[,)]?\s*(.+)/i);
-  if (match) return { variable: match[1], approach: match[2].trim(), func: match[3].trim() };
-  throw new Error("Invalid limit syntax");
-};
-
-// Helpers
-const addDerivativeRules = (steps, func, variable) => {
-  if (func.includes("^")) steps.push(createStep(steps.length+1, "Power rule", "d/dx[x^n]=n*x^(n-1)","Power rule applied"));
-  if (func.includes("sin")||func.includes("cos")||func.includes("tan")) steps.push(createStep(steps.length+1,"Trig rules","d/dx[sin(x)]=cos(x), d/dx[cos(x)]=-sin(x)","Trig differentiation"));
-  if (func.includes("ln")||func.includes("log")) steps.push(createStep(steps.length+1,"Log rule","d/dx[ln(x)]=1/x","Log differentiation"));
-  if (func.includes("e^")) steps.push(createStep(steps.length+1,"Exp rule","d/dx[e^x]=e^x","Exp differentiation"));
-};
-
-const solveIntegralByPattern = (func, variable, steps) => {
-  const powerMatch = func.match(new RegExp(`(\\d*)?\\*?${variable}\\^(\\d+)`));
-  if(powerMatch){const coeff = powerMatch[1]?parseInt(powerMatch[1]):1;const power=parseInt(powerMatch[2]);const newPower=power+1;const newCoeff=coeff/newPower;steps.push(createStep(steps.length+1,"Power rule",`∫x^n dx = x^(n+1)/(n+1) + C`,"Power rule"));return `${newCoeff===1?"":newCoeff}${variable}^${newPower} + C`;}
-  if(func===variable){steps.push(createStep(steps.length+1,"Linear function","∫x dx = x²/2 + C","Linear integration"));return `${variable}²/2 + C`;}
-  if(!func.includes(variable)){steps.push(createStep(steps.length+1,"Constant","∫c dx = cx + C","Constant integration"));return `${func}*${variable} + C`;}
-  if(func.includes("sin")){steps.push(createStep(steps.length+1,"Sine","∫sin(x) dx = -cos(x) + C","Trig"));return `-cos(${variable}) + C`;}
-  if(func.includes("cos")){steps.push(createStep(steps.length+1,"Cosine","∫cos(x) dx = sin(x) + C","Trig"));return `sin(${variable}) + C`;}
-  return `∫${func} d${variable} (advanced techniques)`;
-};
-
-const solveEquationManually = (expr, variable, steps) => {
-  steps.push(createStep(steps.length+1,"Manual solution","Algebraic manipulation","Step-by-step algebra"));
-  return createSuccessResult(steps,"Solution requires advanced techniques","algebra");
-};
-
-// Utilities
-const createStep=(step,desc,expr,explanation)=>({step,description:desc,expression:expr,explanation});
-const createSuccessResult=(steps,finalAnswer,type)=>({steps,finalAnswer,type,success:true});
-const createErrorResult=(type,error)=>({steps:[],finalAnswer:"",type,success:false,error:error instanceof Error?error.message:String(error)});
-
-const validateMathExpression=(expression)=>{try{parse(expression);return {valid:true}}catch(error){return {valid:false,error:error instanceof Error?error.message:"Invalid expression"}}};
-const getExpressionType=(expression)=>{const clean=expression.toLowerCase();if(isDerivativeOperation(clean))return "derivative";if(isIntegralOperation(clean))return "integral";if(isEquationSolving(clean))return "equation";if(isLimitOperation(clean))return "limit";return "simplification";};
-
-module.exports={solveMathExpression,validateMathExpression,getExpressionType};
+module.exports = { solveMathExpression, validateMathExpression, getExpressionType };

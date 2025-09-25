@@ -1,4 +1,3 @@
-// backend/server.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -14,14 +13,14 @@ app.use(cors());
 app.use(express.json());
 
 // API Routes
-app.use("/api/math", mathRoutes);
+app.use("/api", mathRoutes);
 
-// Health check route
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Math solver backend running 🚀" });
 });
 
-// Serve frontend build (optional - if React is in same project)
+// Serve frontend build (optional)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/build")));
 
