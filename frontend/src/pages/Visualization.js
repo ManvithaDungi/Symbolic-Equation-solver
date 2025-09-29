@@ -1,5 +1,6 @@
-// math/src/pages/Visualizer.js
+// src/pages/Visualizer.js
 import React, { useState, useCallback, useMemo } from "react";
+import PropTypes from 'prop-types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { TrendingUp, BarChart3, Play, RotateCcw } from "lucide-react";
 import { evaluate } from "mathjs";
@@ -87,6 +88,17 @@ const GraphVisualizer = ({ equation, type = "function", domain = [-10, 10] }) =>
       </footer>
     </section>
   );
+};
+
+GraphVisualizer.propTypes = {
+  equation: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['function', 'integral', 'derivative']),
+  domain: PropTypes.arrayOf(PropTypes.number),
+};
+
+GraphVisualizer.defaultProps = {
+  type: 'function',
+  domain: [-10, 10],
 };
 
 const Visualization = () => {

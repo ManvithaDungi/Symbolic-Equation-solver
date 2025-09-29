@@ -1,3 +1,4 @@
+//frontend/src/pages/NotFound.js
 import React, { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import "./NotFound.css";

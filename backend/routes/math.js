@@ -1,10 +1,10 @@
-// backend/routes/math.js or backend/server.js (add this route)
+// backend/routes/math.js 
 const express = require('express');
 const { solveMathExpression, validateMathExpression, getExpressionType } = require("../utils/mathSolver");
 const router = express.Router();
 
 // POST /api/solve - Main solving endpoint
-router.post("/api/solve", (req, res) => {
+router.post("/solve", (req, res) => {
   try {
     const { expression } = req.body;
     
@@ -50,8 +50,8 @@ router.post("/api/solve", (req, res) => {
   }
 });
 
-// GET /api/examples - Get example expressions
-router.get('/api/examples', (req, res) => {
+// GET /examples - Get example expressions
+router.get('/examples', (req, res) => {
   const examples = {
     basic: [
       "2 + 3 * 4",
@@ -78,8 +78,8 @@ router.get('/api/examples', (req, res) => {
   });
 });
 
-// POST /api/validate - Validate expression syntax
-router.post('/api/validate', (req, res) => {
+// POST /validate - Validate expression syntax
+router.post('/validate', (req, res) => {
   try {
     const { expression } = req.body;
     

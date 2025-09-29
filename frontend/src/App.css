@@ -12,7 +12,12 @@
   --accent-secondary: #67fff2;
   --accent-tertiary: #81ec86;
   --text-primary: #e0e0e0;
-
+  /* Common tokens referenced by other CSS files */
+  --text-secondary: #b0b0b5;
+  --cyber-border: #333344;
+  --cyber-accent-primary: #43b0af;
+  --cyber-accent-secondary: #67fff2;
+  --cyber-text-secondary: #b0b0b5;
 }
 
 * {

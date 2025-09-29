@@ -344,18 +344,26 @@ const createErrorResult = (type, error) => ({
 
 const validateMathExpression = (expression) => {
   try {
-    // Basic validation
     if (!expression || expression.trim().length === 0) {
       return { valid: false, error: "Expression cannot be empty" };
     }
-    
-    // Try to parse the expression
-    parse(expression);
+
+    const trimmed = expression.trim();
+    const lower = trimmed.toLowerCase();
+
+    // Allow our supported operation syntaxes without mathjs parsing
+    if (isDerivativeOperation(lower)) return { valid: true };
+    if (isIntegralOperation(lower)) return { valid: true };
+    if (isSolveOperation(lower)) return { valid: true };
+    if (isLimitOperation(lower)) return { valid: true };
+
+    // Otherwise, try to parse as a standard math expression
+    parse(trimmed);
     return { valid: true };
   } catch (error) {
-    return { 
-      valid: false, 
-      error: error instanceof Error ? error.message : "Invalid expression" 
+    return {
+      valid: false,
+      error: error instanceof Error ? error.message : "Invalid expression"
     };
   }
 };
