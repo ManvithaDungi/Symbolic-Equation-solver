@@ -16,6 +16,7 @@ class Home extends Component {
         { icon: BookOpen, title: "Multiple Topics", description: "Supports algebra, calculus, derivatives, and integrals" },
       ],
       exampleProblems: ["x² + 2x + 1", "derivative(x³, x)", "integral(x², x)", "solve(x² - 4, x)"],
+      mounted: false,
     };
   }
 
@@ -23,6 +24,7 @@ class Home extends Component {
     // Called after component is mounted
     console.log("Home component mounted");
     // e.g., fetch data or start timers here
+    this.setState({ mounted: true });
   }
 
   componentWillUnmount() {

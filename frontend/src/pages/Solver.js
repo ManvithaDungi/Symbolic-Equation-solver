@@ -2,87 +2,98 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { motion } from "framer-motion";
+import { TextField, Button } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import axios from "axios";
 
 import { Calculator, Zap, CheckCircle, AlertCircle, Copy } from "lucide-react";
 import "./Solver.css";
 
-class EquationInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      equation: "",
-      exampleEquations: [
-        "x^2 + 2*x + 1",
-        "derivative(x^3 + 2*x^2, x)",
-        "integral(x^2, x)",
-        "solve(x^2 - 4 = 0, x)",
-        "2 + 3 * 4",
-        "sin(pi/2)",
-      ],
-    };
-  }
+// ---------------- Equation Input with Formik ----------------
+const EquationInput = ({ onSolve, isLoading }) => {
+  const exampleEquations = [
+    "x^2 + 2*x + 1",
+    "derivative(x^3 + 2*x^2, x)",
+    "integral(x^2, x)",
+    "solve(x^2 - 4 = 0, x)",
+    "2 + 3 * 4",
+    "sin(pi/2)",
+  ];
 
-  handleChange = (e) => {
-    this.setState({ equation: e.target.value });
+  const formik = useFormik({
+    initialValues: { equation: "" },
+    validationSchema: Yup.object({
+      equation: Yup.string()
+        .trim()
+        .required("Equation is required")
+        .min(2, "Too short!"),
+    }),
+    onSubmit: (values) => {
+      onSolve(values.equation.trim());
+    },
+  });
+
+  const setExample = (example) => {
+    formik.setFieldValue("equation", example);
   };
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    if (this.state.equation.trim()) {
-      this.props.onSolve(this.state.equation.trim());
-    }
-  };
+  return (
+    <div className="equation-input-container">
+      <h2>Enter Your Equation</h2>
+      <p>Type mathematical expressions using standard notation</p>
 
-  setExample = (example) => {
-    this.setState({ equation: example });
-  };
-
-  render() {
-    const { isLoading } = this.props;
-    const { equation, exampleEquations } = this.state;
-
-    return (
-      <div className="equation-input-container">
-        <h2>Enter Your Equation</h2>
-        <p>Type mathematical expressions using standard notation</p>
-
-        <form onSubmit={this.handleSubmit}>
-          <div className="input-with-icon">
-            <input
-              type="text"
-              value={equation}
-              onChange={this.handleChange}
-              placeholder="e.g., x^2 + 2*x + 1 or derivative(x^3, x)"
-              disabled={isLoading}
-              aria-label="Equation input"
-            />
-            <Calculator size={20} aria-hidden="true" className="input-icon" />
-          </div>
-
-          <button type="submit" disabled={!equation.trim() || isLoading}>
-            {isLoading ? "Solving..." : <><Zap size={16} /> Solve Equation</>}
-          </button>
-        </form>
-
-        <div className="quick-examples">
-          <p>Quick Examples:</p>
-          {exampleEquations.map((example, i) => (
-            <button
-              key={i}
-              onClick={() => this.setExample(example)}
-              disabled={isLoading}
-              type="button"
-              className="example-button"
-            >
-              {example}
-            </button>
-          ))}
+      <form onSubmit={formik.handleSubmit}>
+        <div className="input-with-icon">
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="medium"
+            name="equation"
+            value={formik.values.equation}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            placeholder="e.g., x^2 + 2*x + 1 or derivative(x^3, x)"
+            disabled={isLoading}
+            aria-label="Equation input"
+            error={formik.touched.equation && Boolean(formik.errors.equation)}
+            helperText={formik.touched.equation && formik.errors.equation}
+            InputProps={{
+              endAdornment: (
+                <Calculator size={20} aria-hidden="true" className="input-icon" />
+              ),
+            }}
+          />
         </div>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!formik.isValid || isLoading}
+          style={{ marginTop: "1rem" }}
+        >
+          {isLoading ? "Solving..." : <><Zap size={16} /> Solve Equation</>}
+        </Button>
+      </form>
+
+      <div className="quick-examples">
+        <p>Quick Examples:</p>
+        {exampleEquations.map((example, i) => (
+          <button
+            key={i}
+            onClick={() => setExample(example)}
+            disabled={isLoading}
+            type="button"
+            className="example-button"
+          >
+            {example}
+          </button>
+        ))}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 EquationInput.propTypes = {
   onSolve: PropTypes.func.isRequired,
@@ -93,8 +104,39 @@ EquationInput.defaultProps = {
   isLoading: false,
 };
 
+// ---------------- Solver Output ----------------
 class SolverOutput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { currentPage: 1, pageSize: 5 };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.equation !== this.props.equation) {
+      this.setState({ currentPage: 1 });
+    }
+  }
+
   copyToClipboard = (text) => navigator.clipboard.writeText(text);
+
+  changePage = (delta) => {
+    const total = this.getTotalPages();
+    this.setState((s) => {
+      const next = Math.min(Math.max(s.currentPage + delta, 1), total);
+      return { currentPage: next };
+    });
+  };
+
+  getTotalPages = () => {
+    const totalSteps = this.props.result?.steps?.length || 0;
+    return Math.max(1, Math.ceil(totalSteps / this.state.pageSize));
+  };
+
+  getPagedSteps = () => {
+    const steps = this.props.result?.steps || [];
+    const start = (this.state.currentPage - 1) * this.state.pageSize;
+    return steps.slice(start, start + this.state.pageSize);
+  };
 
   render() {
     const { equation, result } = this.props;
@@ -141,7 +183,7 @@ class SolverOutput extends Component {
           {result.steps && result.steps.length > 0 && (
             <div className="steps-section" aria-label="Step-by-step solution">
               <h4>Step-by-Step Solution:</h4>
-              {result.steps.map((step) => (
+              {this.getPagedSteps().map((step) => (
                 <motion.div
                   key={step.step}
                   className="step-block"
@@ -162,9 +204,16 @@ class SolverOutput extends Component {
                     </button>
                   </div>
                   <div className="step-expression">{step.expression}</div>
-                  {step.explanation && <p className="step-explanation">{step.explanation}</p>}
+                  {step.explanation && (
+                    <p className="step-explanation">{step.explanation}</p>
+                  )}
                 </motion.div>
               ))}
+              <div className="pagination-controls" style={{ display: "flex", justifyContent: "space-between", marginTop: "0.75rem" }}>
+                <button type="button" onClick={() => this.changePage(-1)} disabled={this.state.currentPage === 1} className="copy-btn">Prev</button>
+                <span style={{ opacity: 0.8 }}>Page {this.state.currentPage} of {this.getTotalPages()}</span>
+                <button type="button" onClick={() => this.changePage(1)} disabled={this.state.currentPage === this.getTotalPages()} className="copy-btn">Next</button>
+              </div>
             </div>
           )}
 
@@ -214,6 +263,7 @@ SolverOutput.defaultProps = {
   result: null,
 };
 
+// ---------------- Main Solver Page ----------------
 class Solver extends Component {
   constructor(props) {
     super(props);
@@ -224,23 +274,23 @@ class Solver extends Component {
     };
   }
 
-handleSolveEquation = async (equation) => {
-  this.setState({ isLoading: true, currentEquation: equation });
-  try {
-    const response = await axios.post("/api/solve", { expression: equation });
-    this.setState({ solution: response.data });
-  } catch (err) {
-    this.setState({
-      solution: {
-        success: false,
-        error: err.response?.data?.error || "Failed to solve equation",
-        type: "error",
-      },
-    });
-  } finally {
-    this.setState({ isLoading: false });
-  }
-};
+  handleSolveEquation = async (equation) => {
+    this.setState({ isLoading: true, currentEquation: equation });
+    try {
+      const response = await axios.post("/api/solve", { expression: equation });
+      this.setState({ solution: response.data });
+    } catch (err) {
+      this.setState({
+        solution: {
+          success: false,
+          error: err.response?.data?.error || "Failed to solve equation",
+          type: "error",
+        },
+      });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
 
   render() {
     const { currentEquation, solution, isLoading } = this.state;
