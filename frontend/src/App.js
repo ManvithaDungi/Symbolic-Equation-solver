@@ -1,10 +1,11 @@
 // src/App.js
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, NavLink, useLocation } from "react-router-dom";
-import { Calculator, Home, TrendingUp, Info } from "lucide-react";  // Removed Menu, X imports
+import { Calculator, Home, TrendingUp, Info, Box } from "lucide-react";  // Removed Menu, X imports
 import HomePage from "./pages/Home";
 import Solver from "./pages/Solver";
 import Visualization from "./pages/Visualization";
+import Plot3DPage from "./pages/Plot3DPage";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import "./App.css";
@@ -34,6 +35,9 @@ const Navbar = () => {
         <NavLink to="/visualization" onClick={handleLinkClick} tabIndex={menuOpen ? 0 : -1}>
           <TrendingUp size={14} aria-hidden="true" /> Visualize
         </NavLink>
+        <NavLink to="/plot3d" onClick={handleLinkClick} tabIndex={menuOpen ? 0 : -1}>
+          <Box size={14} aria-hidden="true" /> 3D Plot
+        </NavLink>
         <NavLink to="/about" onClick={handleLinkClick} tabIndex={menuOpen ? 0 : -1}>
           <Info size={14} aria-hidden="true" /> About
         </NavLink>
@@ -50,6 +54,7 @@ const App = () => (
         <Route path="/" element={<HomePage />} />
         <Route path="/solver" element={<Solver />} />
         <Route path="/visualization" element={<Visualization />} />
+        <Route path="/plot3d" element={<Plot3DPage />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

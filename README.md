@@ -7,6 +7,7 @@ A full-stack web application that allows users to solve mathematical expressions
 
 ## Features
 
+### Mathematical Problem Solving
 - Solve arithmetic expressions and simplify algebraic expressions
 - Solve linear and quadratic equations
 - Compute derivatives and integrals
@@ -14,13 +15,29 @@ A full-stack web application that allows users to solve mathematical expressions
 - Step-by-step solution explanation for each computation
 - Example expressions for testing
 
+### Advanced Visualization
+- **2D Function Graphing**: Real-time plotting with customizable ranges
+- **3D Surface Visualization**: Interactive 3D function plotting with WebGL
+- **Interactive Parameter Manipulation**: Drag sliders to see real-time effects
+- **Mathematical Concept Animations**: Animated demonstrations of derivatives and integrals
+- **Multiple Plot Types**: Surface, wireframe, and point rendering for 3D functions
+
+### 3D Plotting Capabilities
+- Interactive 3D surface generation
+- Real-time parameter manipulation
+- Predefined function presets
+- Custom domain and resolution settings
+- Mathematical expression validation
+- Performance-optimized rendering
+
 ---
 
 ## Tech Stack
 
-- **Frontend:** React, Axios, CSS
+- **Frontend:** React, Three.js, React Three Fiber, Framer Motion, Axios, CSS
 - **Backend:** Node.js, Express
 - **Math Engine:** Math.js
+- **3D Graphics:** Three.js, WebGL
 - **Database:** None (can be extended to store user history)
 - **Deployment:** GitHub Pages (frontend) + Railway/Render/Vercel (backend)
 
@@ -33,13 +50,26 @@ A full-stack web application that allows users to solve mathematical expressions
 labeval2/
 ├── backend/
 │   ├── routes/
-│   │   └── math.js
+│   │   ├── math.js
+│   │   └── plot3d.js
 │   ├── utils/
-│   │   └── mathSolver.js
+│   │   ├── mathSolver.js
+│   │   └── plot3dSolver.js
 │   ├── server.js
 │   └── package.json
 ├── frontend/
 │   ├── src/
+│   │   ├── components/
+│   │   │   ├── Plot3D.js
+│   │   │   ├── InteractiveManipulator.js
+│   │   │   └── AnimationSequences.js
+│   │   ├── pages/
+│   │   │   ├── Home.js
+│   │   │   ├── Solver.js
+│   │   │   ├── Visualization.js
+│   │   │   ├── Plot3DPage.js
+│   │   │   └── About.js
+│   │   └── ...
 │   ├── public/
 │   ├── package.json
 │   └── ...
@@ -114,6 +144,8 @@ The frontend will run at `http://localhost:3000`.
 
 ## API Endpoints
 
+### Math Solver Endpoints
+
 * **POST `/api/math/solve`** - Solve a math expression
   Request body:
 
@@ -133,6 +165,46 @@ The frontend will run at `http://localhost:3000`.
   ```
 
 * **GET `/api/math/examples`** - Get example expressions
+
+### 3D Plotting Endpoints
+
+* **POST `/api/plot3d/evaluate`** - Evaluate 3D function at specific coordinates
+  Request body:
+
+  ```json
+  {
+    "equation": "x^2 + y^2",
+    "x": 2,
+    "y": 3,
+    "parameters": {}
+  }
+  ```
+
+* **POST `/api/plot3d/surface`** - Generate 3D surface data
+  Request body:
+
+  ```json
+  {
+    "equation": "x^2 + y^2",
+    "domain": { "x": [-5, 5], "y": [-5, 5] },
+    "resolution": 50,
+    "parameters": {}
+  }
+  ```
+
+* **POST `/api/plot3d/validate`** - Validate 3D expression
+  Request body:
+
+  ```json
+  {
+    "equation": "x^2 + y^2",
+    "parameters": {}
+  }
+  ```
+
+* **GET `/api/plot3d/presets`** - Get predefined 3D functions
+
+* **GET `/api/plot3d/stats`** - Get 3D plotting statistics
 
 ---
 

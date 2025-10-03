@@ -1,0 +1,266 @@
+/* frontend/src/components/Plot3D.css - Advanced 3D Visualization Styles */
+
+:root {
+  --plot3d-bg: #0a0a0f;
+  --plot3d-surface: #1e1e2e;
+  --plot3d-border: #333344;
+  --plot3d-accent: #43b0af;
+  --plot3d-text: #e0e0e0;
+  --plot3d-text-secondary: #b0b0b5;
+}
+
+.plot3d-container {
+  display: flex;
+  gap: 1rem;
+  background: var(--plot3d-surface);
+  border: 1px solid var(--plot3d-border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  min-height: 500px;
+}
+
+.plot3d-controls {
+  flex: 0 0 300px;
+  background: var(--plot3d-bg);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.control-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--plot3d-border);
+}
+
+.control-section:last-child {
+  border-bottom: none;
+}
+
+.control-section h4 {
+  color: var(--plot3d-accent);
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.parameter-slider {
+  margin-bottom: 1rem;
+}
+
+.slider-label {
+  display: block;
+  color: var(--plot3d-text);
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.slider-input {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--plot3d-border);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--slider-color, var(--plot3d-accent));
+  cursor: pointer;
+  border: 2px solid var(--plot3d-surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider-input::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.slider-input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--slider-color, var(--plot3d-accent));
+  cursor: pointer;
+  border: 2px solid var(--plot3d-surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.slider-input::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.display-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.display-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--plot3d-text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.display-controls label:hover {
+  color: var(--plot3d-text);
+}
+
+.display-controls input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--plot3d-accent);
+}
+
+.plot3d-canvas {
+  flex: 1;
+  background: var(--plot3d-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  min-height: 500px;
+}
+
+.plot3d-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Animation Controls */
+.animation-controls {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(30, 30, 46, 0.9);
+  border: 1px solid var(--plot3d-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 10;
+}
+
+.animation-btn {
+  background: var(--plot3d-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.animation-btn:hover {
+  background: #3a9a99;
+  transform: translateY(-1px);
+}
+
+.animation-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .plot3d-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .plot3d-controls {
+    flex: none;
+    max-height: 200px;
+  }
+  
+  .plot3d-canvas {
+    min-height: 300px;
+  }
+}
+
+/* Loading States */
+.plot3d-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  color: var(--plot3d-text-secondary);
+  font-size: 1.1rem;
+}
+
+.plot3d-loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--plot3d-border);
+  border-top: 2px solid var(--plot3d-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error States */
+.plot3d-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 500px;
+  color: var(--plot3d-text-secondary);
+  text-align: center;
+  padding: 2rem;
+}
+
+.plot3d-error h3 {
+  color: #ef4444;
+  margin-bottom: 0.5rem;
+}
+
+.plot3d-error p {
+  margin-bottom: 1rem;
+  max-width: 300px;
+}
+
+/* Interactive Hints */
+.plot3d-hint {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(30, 30, 46, 0.9);
+  border: 1px solid var(--plot3d-border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--plot3d-text-secondary);
+  font-size: 0.8rem;
+  z-index: 10;
+}
+
+.plot3d-hint::before {
+  content: '💡 ';
+  margin-right: 0.25rem;
+}

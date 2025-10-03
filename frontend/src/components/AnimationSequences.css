@@ -1,0 +1,398 @@
+/* frontend/src/components/AnimationSequences.css - Animation Sequences Styles */
+
+:root {
+  --animation-bg: #0a0a0f;
+  --animation-surface: #1e1e2e;
+  --animation-border: #333344;
+  --animation-accent: #43b0af;
+  --animation-accent-hover: #3a9a99;
+  --animation-text: #e0e0e0;
+  --animation-text-secondary: #b0b0b5;
+  --animation-success: #10b981;
+  --animation-warning: #f59e0b;
+  --animation-error: #ef4444;
+}
+
+.animation-sequences {
+  background: var(--animation-surface);
+  border: 1px solid var(--animation-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
+.sequences-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.sequences-header h2 {
+  color: var(--animation-accent);
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.sequences-header p {
+  color: var(--animation-text-secondary);
+  font-size: 1.1rem;
+}
+
+.animation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--animation-bg);
+  border-radius: 8px;
+  border: 1px solid var(--animation-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.control-btn {
+  background: var(--animation-accent);
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.control-btn:hover {
+  background: var(--animation-accent-hover);
+  transform: translateY(-1px);
+}
+
+.control-btn.playing {
+  background: var(--animation-error);
+}
+
+.control-btn.playing:hover {
+  background: #dc2626;
+}
+
+.control-group label {
+  color: var(--animation-text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.speed-slider {
+  width: 100px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--animation-border);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--animation-accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speed-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.speed-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--animation-accent);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.speed-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.control-group span {
+  color: var(--animation-text);
+  font-weight: 600;
+  min-width: 30px;
+  text-align: center;
+}
+
+.animation-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.animation-tab {
+  background: var(--animation-bg);
+  border: 1px solid var(--animation-border);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: var(--animation-text-secondary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.animation-tab:hover {
+  background: var(--animation-surface);
+  color: var(--animation-text);
+  border-color: var(--animation-accent);
+}
+
+.animation-tab.active {
+  background: var(--animation-accent);
+  color: white;
+  border-color: var(--animation-accent);
+}
+
+.animation-content {
+  min-height: 400px;
+  background: var(--animation-bg);
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid var(--animation-border);
+}
+
+.animation-container {
+  width: 100%;
+  height: 100%;
+}
+
+.animation-title {
+  text-align: center;
+  color: var(--animation-accent);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.derivative-animation,
+.integration-animation {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  min-height: 300px;
+}
+
+.animation-svg {
+  flex: 1;
+  max-width: 500px;
+  background: var(--animation-surface);
+  border-radius: 8px;
+  border: 1px solid var(--animation-border);
+}
+
+.animation-explanation {
+  flex: 1;
+  max-width: 400px;
+}
+
+.animation-explanation h4 {
+  color: var(--animation-accent);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.animation-explanation p {
+  color: var(--animation-text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .animation-sequences {
+    padding: 1rem;
+  }
+  
+  .animation-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .control-group {
+    justify-content: center;
+  }
+  
+  .derivative-animation,
+  .integration-animation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .animation-svg {
+    max-width: 100%;
+  }
+  
+  .animation-explanation {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .sequences-header h2 {
+    font-size: 1.4rem;
+  }
+  
+  .sequences-header p {
+    font-size: 1rem;
+  }
+  
+  .animation-selector {
+    flex-direction: column;
+  }
+  
+  .animation-tab {
+    text-align: center;
+  }
+}
+
+/* Loading States */
+.animation-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--animation-text-secondary);
+  font-size: 1.1rem;
+}
+
+.animation-loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--animation-border);
+  border-top: 2px solid var(--animation-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error States */
+.animation-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--animation-text-secondary);
+  text-align: center;
+  padding: 2rem;
+}
+
+.animation-error h3 {
+  color: var(--animation-error);
+  margin-bottom: 0.5rem;
+}
+
+.animation-error p {
+  margin-bottom: 1rem;
+  max-width: 300px;
+}
+
+/* Accessibility */
+.control-btn:focus,
+.animation-tab:focus {
+  outline: 2px solid var(--animation-accent);
+  outline-offset: 2px;
+}
+
+.speed-slider:focus {
+  box-shadow: 0 0 0 3px rgba(67, 176, 175, 0.3);
+}
+
+/* Animation Enhancements */
+.animation-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.animation-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(67, 176, 175, 0.1), transparent);
+  animation: shimmer 3s infinite;
+  z-index: 1;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Interactive Elements */
+.animation-svg {
+  cursor: crosshair;
+}
+
+.animation-svg:hover {
+  box-shadow: 0 4px 12px rgba(67, 176, 175, 0.2);
+  transition: box-shadow 0.3s ease;
+}
