@@ -9,6 +9,11 @@
 
 const { evaluate, parse, simplify, derivative } = require('mathjs');
 
+// NODE.JS CONCEPT: Error handling for missing dependencies
+if (!evaluate || !parse) {
+  throw new Error('Math.js library is not properly installed or imported');
+}
+
 // NODE.JS CONCEPT: 3D Function Evaluation
 // Evaluates a 3D mathematical function at specific coordinates
 const evaluate3DFunction = async (equation, x, y, parameters = {}) => {

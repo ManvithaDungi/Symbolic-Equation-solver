@@ -18,6 +18,9 @@ app.use(express.json());
 app.use("/api/math", mathRoutes);
 app.use("/api/plot3d", plot3dRoutes);
 
+// Direct API routes for backward compatibility
+app.use("/api", mathRoutes);
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Math solver backend running 🚀" });

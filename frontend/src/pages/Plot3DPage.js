@@ -102,6 +102,7 @@ const Plot3DPage = () => {
     setEquation(preset.equation);
     setParameters(preset.parameters);
     setDomain(preset.domain);
+    setPlotType("surface"); // Reset plot type when selecting preset
   }, []);
 
   const handleReset = useCallback(() => {
@@ -233,6 +234,16 @@ const Plot3DPage = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
+          <div className="plot-info" style={{ 
+            marginBottom: '1rem', 
+            padding: '0.5rem', 
+            backgroundColor: '#f3f4f6', 
+            borderRadius: '0.25rem',
+            fontSize: '0.875rem'
+          }}>
+            <strong>Current Equation:</strong> {equation}<br/>
+            <strong>Domain:</strong> X: [{domain.x[0]}, {domain.x[1]}], Y: [{domain.y[0]}, {domain.y[1]}]
+          </div>
           <Plot3D
             equation={equation}
             domain={domain}

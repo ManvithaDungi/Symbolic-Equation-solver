@@ -33,12 +33,19 @@ const GraphVisualizer = ({ equation, type = "function", domain = [-10, 10] }) =>
       const step = (max - min) / 200;
       for (let x = min; x <= max; x += step) {
         try {
-          const expr = equation.replace(/x/g, `(${x})`);
+          // Improved variable replacement to handle complex expressions
+          let expr = equation;
+          expr = expr.replace(/\bx\b/g, `(${x})`);
+          expr = expr.replace(/\bpi\b/g, '3.14159265359');
+          expr = expr.replace(/\be\b/g, '2.71828182846');
+          
           const y = evaluate(expr);
           if (typeof y === "number" && isFinite(y)) {
             data.push({ x: parseFloat(x.toFixed(3)), y: parseFloat(y.toFixed(3)) });
           }
-        } catch {}
+        } catch (error) {
+          console.warn(`Failed to evaluate at x=${x}:`, error.message);
+        }
       }
       return data;
     } catch {

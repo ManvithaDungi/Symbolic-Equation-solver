@@ -7,7 +7,7 @@
 // - Conditional Rendering (different plot types)
 // - Custom Hooks Pattern (3D plotting logic)
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Grid, Text } from '@react-three/drei';
 import { evaluate } from 'mathjs';
@@ -29,16 +29,28 @@ const useFunction3D = (equation, domain, resolution = 50) => {
           const y = yMin + (yMax - yMin) * (j / resolution);
           
           try {
-            const expr = equation.replace(/x/g, `(${x})`).replace(/y/g, `(${y})`);
+            // Improved variable replacement to handle complex expressions
+            let expr = equation;
+            
+            // Replace variables more carefully to avoid breaking expressions
+            expr = expr.replace(/\bx\b/g, `(${x})`);
+            expr = expr.replace(/\by\b/g, `(${y})`);
+            
+            // Handle common mathematical functions and constants
+            expr = expr.replace(/\bpi\b/g, '3.14159265359');
+            expr = expr.replace(/\be\b/g, '2.71828182846');
+            
             const z = evaluate(expr);
             
             if (typeof z === 'number' && isFinite(z)) {
               vertices.push(x, y, z);
             } else {
-              vertices.push(x, y, 0);
+              // Use a small offset instead of 0 to avoid flat surfaces
+              vertices.push(x, y, 0.001);
             }
-          } catch {
-            vertices.push(x, y, 0);
+          } catch (error) {
+            console.warn(`Failed to evaluate at (${x}, ${y}):`, error.message);
+            vertices.push(x, y, 0.001);
           }
         }
       }
@@ -57,7 +69,8 @@ const useFunction3D = (equation, domain, resolution = 50) => {
       }
       
       return { vertices, indices };
-    } catch {
+    } catch (error) {
+      console.error('3D function evaluation failed:', error);
       return { vertices: [], indices: [] };
     }
   }, [equation, domain, resolution]);
@@ -125,6 +138,7 @@ const ParameterSlider = ({ label, value, min, max, step, onChange, color = '#3b8
 // REACT CONCEPT: Main 3D Plot Component
 const Plot3D = ({ equation, domain, parameters = {}, onParameterChange }) => {
   const [showGrid, setShowGrid] = useState(true);
+  const [error, setError] = useState(null);
   
   // REACT CONCEPT: State Management for 3D plot controls
   const [plotSettings, setPlotSettings] = useState({
@@ -141,8 +155,39 @@ const Plot3D = ({ equation, domain, parameters = {}, onParameterChange }) => {
     }
   };
   
+  // Validate equation and domain
+  useEffect(() => {
+    try {
+      if (!equation || !domain) {
+        setError('Missing equation or domain');
+        return;
+      }
+      
+      // Test equation with sample values
+      const testExpr = equation.replace(/\bx\b/g, '(0)').replace(/\by\b/g, '(0)');
+      evaluate(testExpr);
+      setError(null);
+    } catch (err) {
+      setError(`Invalid equation: ${err.message}`);
+    }
+  }, [equation, domain]);
+  
   return (
     <div className="plot3d-container">
+      {/* REACT CONCEPT: Conditional Rendering - Error Display */}
+      {error && (
+        <div className="plot3d-error" style={{ 
+          padding: '1rem', 
+          backgroundColor: '#fee2e2', 
+          color: '#dc2626', 
+          borderRadius: '0.5rem',
+          marginBottom: '1rem',
+          border: '1px solid #fecaca'
+        }}>
+          <strong>Error:</strong> {error}
+        </div>
+      )}
+      
       {/* REACT CONCEPT: Conditional Rendering - Control Panel */}
       <div className="plot3d-controls">
         <div className="control-section">

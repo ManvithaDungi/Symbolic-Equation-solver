@@ -7,7 +7,7 @@
 // - Component Composition (reusable slider components)
 // - Conditional Rendering (different manipulation modes)
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sliders, Play, Pause, RotateCcw, Zap, Eye, EyeOff } from 'lucide-react';
 import './InteractiveManipulator.css';
@@ -93,7 +93,7 @@ const AnimationSequence = ({ parameters, onParameterChange, isPlaying, onToggle 
     return steps;
   }, [parameters]);
   
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isPlaying) return;
     
     const interval = setInterval(() => {

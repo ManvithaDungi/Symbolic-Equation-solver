@@ -8,6 +8,7 @@ import Visualization from "./pages/Visualization";
 import Plot3DPage from "./pages/Plot3DPage";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./App.css";
 
 const Navbar = () => {
@@ -47,19 +48,21 @@ const Navbar = () => {
 };
 
 const App = () => (
-  <BrowserRouter>
-    <div className="min-h-screen">
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/solver" element={<Solver />} />
-        <Route path="/visualization" element={<Visualization />} />
-        <Route path="/plot3d" element={<Plot3DPage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
-  </BrowserRouter>
+  <ErrorBoundary>
+    <BrowserRouter>
+      <div className="min-h-screen">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/solver" element={<Solver />} />
+          <Route path="/visualization" element={<Visualization />} />
+          <Route path="/plot3d" element={<Plot3DPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  </ErrorBoundary>
 );
 
 export default App;
